@@ -61,6 +61,38 @@ func send_transaction():
     print("Transacción enviada:", tx_result.hash)
 ```
 
+```gdscript
+extends Node
+
+@onready var metamask = $MetaMaskClient
+
+func _ready():
+    if metamask.is_available():
+        metamask.connect_accounts()
+        metamask.accounts_changed.connect(_on_accounts)
+        metamask.chain_changed.connect(_on_chain)
+    else:
+        show_error("¡Instala MetaMask!")
+
+func _on_accounts(accounts: Array[String]):
+    print("Cuentas conectadas:", accounts)
+
+func _on_chain(chain_id: String):
+    print("Cadena actual:", chain_id)
+
+func send_eth():
+    var result = await metamask.send_eth_transaction(
+        "0xTuDireccion",
+        "0xDestino",
+        "1000000000000000000"  # 1 ETH en wei
+    )
+    if result.has("error"):
+        print("Error:", result.error)
+    else:
+        print("TX Hash:", result)
+```
+
+
 ---
 
 ## 🌐 Requisitos
